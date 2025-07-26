@@ -1,7 +1,19 @@
 version: '3.8'
 services:
-  mongodb:
+  app:
+    depends_on:
+      mongo:
+        condition: service_healthy
+    links:
+      - "mongo:mongo_url"
+    build:
+      dockerfile: Dockerfile
+  mongo:
     image: mongo:latest
-    container_name: mongodb_dev
     ports:
       - "27017:27017"
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
