@@ -15,22 +15,6 @@ spec:
         app: backend
     spec:
       containers:
-        - name: backend-without-cds
-          image: ultimoguia:withoutCds
-          ports:
-            - containerPort: 8081
-          env:
-            - name: SERVER_PORT
-              value: "8081"
-            - name: JAVA_TOOL_OPTIONS
-              value: "-XX:ActiveProcessorCount=2"
-          resources:
-            requests:
-              memory: "2000Mi"
-              cpu: "2000m"
-            limits:
-              memory: "2000Mi"
-              cpu: "2000m"
         - name: backend
           image: ultimoguia:cds
           ports:
