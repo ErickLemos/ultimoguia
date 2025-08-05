@@ -24,6 +24,22 @@ spec:
               value: "8080"
             - name: JAVA_TOOL_OPTIONS
               value: "-XX:ActiveProcessorCount=2"
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: "/actuator/health/liveness"
+            initialDelaySeconds: 1
+            failureThreshold: 3
+            periodSeconds: 3
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: "/actuator/health/readiness"
+            initialDelaySeconds: 3
+            failureThreshold: 3
+            periodSeconds: 1
+            timeoutSeconds: 1
           resources:
             requests:
               memory: "2000Mi"
