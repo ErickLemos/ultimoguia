@@ -8,21 +8,16 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/notas")
-class RestController(
-    private val notaRepository: NotaRepository
-) {
+class RestController {
 
     @PostMapping
     fun save(@RequestBody notaDto: NotaDto): ResponseEntity<NotaDto> {
-        val nota = Nota(
-            titulo = notaDto.titulo,
-            conteudo = notaDto.conteudo
+        return ResponseEntity.ok(
+            NotaDto(
+                titulo = "${notaDto.titulo}-cadastrado",
+                conteudo = notaDto.conteudo
+            )
         )
-        val notaSalva = notaRepository.save(nota)
-        return ResponseEntity.ok(NotaDto(
-            titulo = notaSalva.titulo,
-            conteudo = notaSalva.conteudo
-        ))
     }
 
 }
