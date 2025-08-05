@@ -56,4 +56,19 @@ spec:
       port: 27017
       targetPort: 27017
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-np
+spec:
+  type: NodePort
+  selector:
+    app: mongo
+  ports:
+    - name: http
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+      nodePort: 32017
 
