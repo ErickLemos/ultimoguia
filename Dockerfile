@@ -25,10 +25,10 @@ COPY --from=builder-cds /builder/extracted/application/ ./
 RUN java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefresh -jar application.jar
 ENTRYPOINT [ \
     "java", \
-    #"-XX:ActiveProcessorCount=2", \
-    #"-Xmx1500m", \
+    "-XX:+UseG1GC", \
+    "-XX:MaxRAMPercentage=70", \
     "-XX:SharedArchiveFile=application.jsa", \
-    #"-XX:StartFlightRecording=name=ContinuousRecording,settings=profile,filename=/recordings/app.jfr", \
+    "-XX:StartFlightRecording=name=ContinuousRecording,settings=profile,filename=/recordings/app.jfr", \
     "-jar", \
     "application.jar" \
 ]
