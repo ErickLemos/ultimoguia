@@ -18,7 +18,7 @@ export default function () {
         titulo: __ITER,
         conteudo: `teste conteudo ${uniqueId}`
     });
-    const res = http.post('http://localhost:30000/notas', payload, params);
+    const res = http.post(`http://localhost:30000/notas`, payload, params);
     check(res, {
         'status da requisição é 200': (r) => r.status === 200,
     });

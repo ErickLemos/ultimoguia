@@ -1,11 +1,15 @@
-version: '3.8'
 services:
-  mongo:
-    image: mongo:latest
+  app:
+    build:
+      dockerfile: Dockerfile
     ports:
-      - "27017:27017"
-    healthcheck:
-      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "8080:8080"
+    cpuset: "1,2"
+    deploy:
+      resources:
+        reservations:
+          memory: 2000m
+          cpus: 2.0
+        limits:
+          memory: 2000m
+          cpus: 2.0
