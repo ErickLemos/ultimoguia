@@ -28,6 +28,7 @@ ENTRYPOINT [ \
     "-XX:+UseG1GC", \
     "-XX:MaxRAMPercentage=70", \
     "-XX:SharedArchiveFile=application.jsa", \
+    "-XX:FlightRecorderOptions=stackdepth=256", \
     "-XX:StartFlightRecording=name=ContinuousRecording,settings=profile,filename=/recordings/app.jfr", \
     "-jar", \
     "application.jar" \
