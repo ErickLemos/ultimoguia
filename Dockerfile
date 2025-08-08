@@ -13,7 +13,7 @@ WORKDIR /builder
 COPY --from=builder /builder/build/libs/ultimoguia-1.0.jar application.jar
 RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
-FROM bellsoft/liberica-runtime-container:jre-21-cds-musl
+FROM bellsoft/liberica-runtime-container:jdk-21-cds-musl
 WORKDIR /application
 EXPOSE 8080
 

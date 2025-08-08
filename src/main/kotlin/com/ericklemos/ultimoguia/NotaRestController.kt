@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 class NotaRestController(
     private val objectMapper: ObjectMapper
 ) {
-    var logger: Logger = LoggerFactory.getLogger(NotaRestController::class.java)
+    val logger: Logger = LoggerFactory.getLogger(NotaRestController::class.java)
 
     @PostMapping
     fun save(@RequestBody notaDto: NotaDto): ResponseEntity<NotaDto> {
