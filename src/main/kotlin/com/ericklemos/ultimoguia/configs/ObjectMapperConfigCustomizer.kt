@@ -1,4 +1,4 @@
-package com.ericklemos.ultimoguia
+package com.ericklemos.ultimoguia.configs
 
 import com.fasterxml.jackson.module.blackbird.BlackbirdModule
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer

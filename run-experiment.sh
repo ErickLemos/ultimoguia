@@ -1,21 +1,11 @@
 #!/bin/bash
-
 export EXPERIMENT_TAG=$1
 
 # Deploy
 docker compose up -d
 sleep 5
 
-# Teste de carga
-for ((i=1; i<=10; i++))
-do
-    sleep 5
-    if [ $i -eq 10 ]; then
-      k6 run --summary-export="./experiments/report-$EXPERIMENT_TAG.json" performance-test.js
-    else
-      k6 run performance-test.js
-    fi
-done
+. ./run-loadtest.sh "$EXPERIMENT_TAG"
 
 # Desligamento e coleta de dados
 sleep 5
