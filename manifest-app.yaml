@@ -21,14 +21,12 @@ spec:
             type: DirectoryOrCreate
       containers:
         - name: backend
-          image: ultimoguia:cds
+          image: ultimoguia:${EXPERIMENT_TAG}
           ports:
             - containerPort: 8080
           env:
             - name: SERVER_PORT
               value: "8080"
-            - name: JAVA_TOOL_OPTIONS
-              value: "-XX:+UseG1GC -XX:MaxRAMPercentage=70 -XX:ActiveProcessorCount=2 -XX:StartFlightRecording=name=ContinuousRecording,settings=profile,filename=/recordings/app.jfr"
           volumeMounts:
             - name: jfr-storage
               mountPath: /recordings

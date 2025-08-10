@@ -1,11 +1,52 @@
-version: '3.8'
 services:
-  mongo:
-    image: mongo:latest
+  tracing:
+    image: openzipkin/zipkin
     ports:
-      - "27017:27017"
-    healthcheck:
-      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "9411:9411"
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/config.prometheus.yml"
+    volumes:
+      - "./config.prometheus.yml:/etc/prometheus/config.prometheus.yml"
+  otel-collector:
+    depends_on:
+      - tracing
+      - prometheus
+    links:
+      - tracing:tracing_url
+    image: otel/opentelemetry-collector-contrib
+    environment:
+      - ZIPKIN_ENDPOINT=http://tracing_url:9411
+    volumes:
+      - "./config.otel-collector.yml:/etc/otelcol-contrib/config.yaml"
+    ports:
+      - "1888:1888"
+      - "8888:8888"
+      - "8889:8889"
+      - "13133:13133"
+      - "4317:4317"
+      - "4318:4318"
+      - "55679:55679"
+  app:
+    depends_on:
+      - otel-collector
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    cpuset: "1,2"
+    volumes:
+      - "./experiments:/recordings/"
+    deploy:
+      resources:
+        reservations:
+          memory: 2000m
+          cpus: 2.0
+        limits:
+          memory: 2000m
+          cpus: 2.0
