@@ -3,6 +3,16 @@ services:
     image: openzipkin/zipkin
     ports:
       - "9411:9411"
+    environment:
+      - JAVA_OPTS=-XX:+UseG1GC -XX:MaxRAMPercentage=70
+    deploy:
+      resources:
+        reservations:
+          memory: 1000m
+          cpus: 1.0
+        limits:
+          memory: 1000m
+          cpus: 1.0
   prometheus:
     image: prom/prometheus
     ports:
@@ -11,6 +21,14 @@ services:
       - "--config.file=/etc/prometheus/config.prometheus.yml"
     volumes:
       - "./config.prometheus.yml:/etc/prometheus/config.prometheus.yml"
+    deploy:
+      resources:
+        reservations:
+          memory: 1000m
+          cpus: 1.0
+        limits:
+          memory: 1000m
+          cpus: 1.0
   otel-collector:
     depends_on:
       - tracing
@@ -30,6 +48,14 @@ services:
       - "4317:4317"
       - "4318:4318"
       - "55679:55679"
+    deploy:
+      resources:
+        reservations:
+          memory: 1000m
+          cpus: 1.0
+        limits:
+          memory: 1000m
+          cpus: 1.0
   app:
     depends_on:
       - otel-collector
