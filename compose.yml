@@ -56,8 +56,29 @@ services:
         limits:
           memory: 1000m
           cpus: 1.0
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    command:
+      - start-dev
+      - --import-realm
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - "./config.keycloak.json:/opt/keycloak/data/import/config.keycloak.json:ro"
+    ports:
+      - "8081:8080"
+    deploy:
+      resources:
+        reservations:
+          memory: 1000m
+          cpus: 1.0
+        limits:
+          memory: 1000m
+          cpus: 1.0
   app:
     depends_on:
+      - keycloak
       - otel-collector
     build:
       dockerfile: Dockerfile
