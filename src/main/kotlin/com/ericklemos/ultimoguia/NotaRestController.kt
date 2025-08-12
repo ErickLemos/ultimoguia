@@ -18,25 +18,21 @@ import org.springframework.web.bind.annotation.RestController
 class NotaRestController(
     private val objectMapper: ObjectMapper,
     private val meterRegistry: MeterRegistry,
+    private val notaRepository: NotaRepository,
     private val auditEventRepository: AuditEventRepository
 ) {
     val logger: Logger = LoggerFactory.getLogger(NotaRestController::class.java)
 
     @PostMapping
     fun save(@RequestBody notaDto: NotaDto): ResponseEntity<NotaDto> {
+        logger.info(objectMapper.writeValueAsString(notaDto))
         MDC.put("request-id", notaDto.titulo)
 
-        // Observability
-        logger.info(objectMapper.writeValueAsString(notaDto))
-        auditEventRepository.add(AuditEventRepositoryImpl.NotaAuditEvent("NOTA_SALVA"))
-        meterRegistry.counter("notas_salvas").increment()
+        val notaEntity = notaRepository.save(notaDto.toEntity())
 
-        return ResponseEntity.ok(
-            NotaDto(
-                titulo = "${notaDto.titulo}-cadastrado",
-                conteudo = notaDto.conteudo
-            )
-        )
+        meterRegistry.counter("notas_salvas").increment()
+        auditEventRepository.add(AuditEventRepositoryImpl.NotaAuditEvent("NOTA_SALVA"))
+        return ResponseEntity.ok(notaEntity.toDto())
     }
 
 }

@@ -76,15 +76,39 @@ services:
         limits:
           memory: 1000m
           cpus: 1.0
+  mongo:
+    image: mongo:7
+    command: --bind_ip_all
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: [ "CMD", "mongosh", "--quiet", "localhost:27017", "--eval", "db.adminCommand('ping').ok" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        reservations:
+          memory: 512m
+          cpus: 0.5
+        limits:
+          memory: 512m
+          cpus: 0.5
   app:
     depends_on:
       - keycloak
       - otel-collector
+      - mongo
     build:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    links:
+      - keycloak:keycloak_url
+      - mongo:mongo_url
     environment:
+      - MONGO_URL=mongodb://mongo_url:27017
+      - KEYCLOAK_URL=http://keycloak_url:8081
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
     cpuset: "1,2"
     volumes:
